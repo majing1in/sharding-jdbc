@@ -23,9 +23,6 @@ rules:
             shardingColumn: order_time
             # 分片算法名称，不支持大写字母和下划线，否则启动就会报错
             shardingAlgorithmName: auto-custom
-    #        keyGenerateStrategy:
-    #          column: order_no
-    #          keyGeneratorName: snowflake
     # 分片算法配置
     shardingAlgorithms:
       # 分片算法名称，不支持大写字母和下划线，否则启动就会报错
