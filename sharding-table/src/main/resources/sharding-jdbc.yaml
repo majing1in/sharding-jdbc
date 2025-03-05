@@ -1,0 +1,42 @@
+# 数据源配置
+dataSources:
+  # 这里的 sharding 是数据源的名称(自定义)，需要多分库时，再重新写一套 sharding1: dataSourceClassName... 这样即可
+  ds0:
+    dataSourceClassName: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.0.0.22:3306/malldb_9qqhed?serverTimezone=Asia/Shanghai&character_set_server=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+    username: write
+    password: S#vjd31VN2
+# 规则配置
+rules:
+  - !SHARDING
+    # 表策略配置
+    tables:
+      # order_record 是逻辑表，订单表
+      tb_order:
+        # 配置数据节点
+        actualDataNodes: ds0.inquiry_order
+        tableStrategy:
+          # 使用标准分片策略
+          standard:
+            # 配置分片字段，以哪个字段作为分片标准
+            shardingColumn: order_time
+            # 分片算法名称，不支持大写字母和下划线，否则启动就会报错
+            shardingAlgorithmName: auto-custom
+    #        keyGenerateStrategy:
+    #          column: order_no
+    #          keyGeneratorName: snowflake
+    # 分片算法配置
+    shardingAlgorithms:
+      # 分片算法名称，不支持大写字母和下划线，否则启动就会报错
+      auto-custom:
+        # 类型：自定义策略
+        type: CLASS_BASED
+        props:
+          # 分片策略
+          strategy: standard
+          # 分片算法类
+          algorithm-expression: com.sharding.table.algorithm.TimeShardingAlgorithm
+props:
+  # 输出SQL
+  sql-show: true
