@@ -1,6 +1,7 @@
 package com.sharding.table.algorithm;
 
 import com.google.common.collect.Range;
+import com.sharding.table.util.ShardingAlgorithmTool;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.sharding.api.sharding.ShardingAutoTableAlgorithm;
@@ -61,14 +62,14 @@ public final class TimeShardingAlgorithm implements StandardShardingAlgorithm<Lo
         String resultTableName = logicTableName + "_" + dateTime.format(TABLE_SHARD_TIME_FORMATTER);
 
         // 检查是否需要初始化
-        // if (availableTargetNames.size() == 1) {
-        //     // 如果只有一个表，说明需要获取所有表名
-        //     List<String> allTableNameBySchema = ShardingAlgorithmTool.getAllTableNameBySchema(logicTableName);
-        //     availableTargetNames.clear();
-        //     availableTargetNames.addAll(allTableNameBySchema);
-        //     autoTablesAmount = allTableNameBySchema.size();
-        //     return resultTableName;
-        // }
+         if (availableTargetNames.size() == 1) {
+             // 如果只有一个表，说明需要获取所有表名
+             List<String> allTableNameBySchema = ShardingAlgorithmTool.getAllTableNameBySchema(logicTableName);
+             availableTargetNames.clear();
+             availableTargetNames.addAll(allTableNameBySchema);
+             autoTablesAmount = allTableNameBySchema.size();
+             return resultTableName;
+         }
 
         return getShardingTableAndCreate(logicTableName, resultTableName, availableTargetNames);
     }
@@ -128,18 +129,17 @@ public final class TimeShardingAlgorithm implements StandardShardingAlgorithm<Lo
         if (availableTargetNames.contains(resultTableName)) {
             return resultTableName;
         } else {
-            // 检查分表获取的表名不存在，需要自动建表
-            // boolean isSuccess = ShardingAlgorithmTool.createShardingTable(logicTableName, resultTableName);
-            // if (isSuccess) {
-            //     // 如果建表成功，需要更新缓存
-            //     availableTargetNames.add(resultTableName);
-            //     autoTablesAmount++;
-            //     return resultTableName;
-            // } else {
-            //     // 如果建表失败，返回逻辑空表
-            //     return logicTableName;
-            // }
-            return logicTableName;
+             // 检查分表获取的表名不存在，需要自动建表
+             boolean isSuccess = ShardingAlgorithmTool.createShardingTable(logicTableName, resultTableName);
+             if (isSuccess) {
+                 // 如果建表成功，需要更新缓存
+                 availableTargetNames.add(resultTableName);
+                 autoTablesAmount++;
+                 return resultTableName;
+             } else {
+                 // 如果建表失败，返回逻辑空表
+                 return logicTableName;
+             }
         }
     }
 
