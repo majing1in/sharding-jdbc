@@ -304,3 +304,18 @@ VALUES ('北京', '北京市', '中国'),
        ('武汉', '湖北省', '中国'),
        ('西安', '陕西省', '中国'),
        ('重庆', '重庆市', '中国');
+
+CREATE TABLE `tb_order_item`
+(
+    `order_item_id` int(10) UNSIGNED                                             NOT NULL AUTO_INCREMENT COMMENT '订单项ID',
+    `order_id`      varchar(26) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '订单ID',
+    `product_id`    int(10) UNSIGNED                                             NOT NULL COMMENT '产品ID',
+    `quantity`      int(10) UNSIGNED                                             NOT NULL DEFAULT 0 COMMENT '数量',
+    PRIMARY KEY (`order_item_id`) USING BTREE,
+    INDEX `idx_order_id` (`order_id`) USING BTREE,
+    INDEX `idx_product_id` (`product_id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci COMMENT = '订单项表'
+  ROW_FORMAT = Dynamic;
+

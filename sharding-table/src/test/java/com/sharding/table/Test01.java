@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.sharding.table.entity.City;
 import com.sharding.table.entity.TbOrder;
+import com.sharding.table.mapper.TbOrderMapper;
 import com.sharding.table.service.ICityService;
 import com.sharding.table.service.ITbOrderService;
 import org.junit.Test;
@@ -24,6 +25,9 @@ public class Test01 {
 
     @Resource
     private ITbOrderService ibOrderService;
+
+    @Resource
+    private TbOrderMapper tbOrderMapper;
 
     @Resource
     private ICityService iCityService;
@@ -88,8 +92,8 @@ public class Test01 {
         Random random = new Random();
         City city = new City();
         city.setCityId(random.nextInt(100000));
-        city.setCityName("洛杉矶");
-        city.setProvince("LuoShanJi");
+        city.setCityName("芝加哥");
+        city.setProvince("ZhiJiaGe");
         city.setCountry("美国");
         iCityService.save(city);
     }
@@ -98,6 +102,17 @@ public class Test01 {
     public void test04() throws ParseException {
         List<City> list = iCityService.list();
         System.out.println(JSON.toJSONString(list));
+    }
+
+    @Test
+    public void test05() throws ParseException {
+        DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime l1 = LocalDateTime.parse("2023-06-01 00:00:00", customFormatter);
+        LocalDateTime l2 = LocalDateTime.parse("2023-07-31 00:00:00", customFormatter);
+        // List<TbOrder> tbOrderList = tbOrderMapper.getTbOrderV1(l1, l2);
+        List<TbOrder> tbOrderList = tbOrderMapper.getTbOrderV2(l1, l2);
+        // System.out.println(JSON.toJSONString(tbOrderList));
+        System.out.println("总条数：" + tbOrderList.size());
     }
 
 }
